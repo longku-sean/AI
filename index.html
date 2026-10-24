@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>文字反轉與 AI 翻譯</title>
-  <!-- Tailwind CSS -->
+  <title>文字反轉與 AI 翻譯器</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -12,53 +11,47 @@
       theme: {
         extend: {
           colors: {
-            brand: {
-              500: '#06b6d4',
-              600: '#0891b2',
-            }
+            brand: { 500: '#06b6d4', 600: '#0891b2' }
           }
         }
       }
     }
   </script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-center items-center p-4 sm:p-6">
 
-  <!-- 主容器 -->
   <main class="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6">
     
-    <!-- 頂部標題與狀態 -->
+    <!-- Header -->
     <header class="flex items-center justify-between border-b border-slate-800 pb-4">
       <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent flex items-center gap-2">
         <i class="fa-solid fa-arrow-left-right text-cyan-400"></i> 文字反轉與 AI 翻譯
       </h1>
-      <span id="statusBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">gemini-2.5-flash</span>
+      <div class="flex items-center gap-2">
+        <span class="text-xs px-2.5 py-1 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/60 font-mono">即時連線</span>
+      </div>
     </header>
 
-    <!-- 快速填入範例 -->
+    <!-- Quick Samples & Controls -->
     <div class="flex items-center gap-2 flex-wrap">
       <span class="text-xs text-slate-400 font-medium">快速填入：</span>
-      <button onclick="setSample('反話')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors border border-slate-700/60 active:scale-95">
-        反話
-      </button>
-      <button onclick="setSample('12345')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors border border-slate-700/60 active:scale-95">
-        12345
-      </button>
-      <button onclick="setSample('Hello World!')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors border border-slate-700/60 active:scale-95">
-        Hello World!
-      </button>
+      <button onclick="setSample('反話')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors border border-slate-700/60 active:scale-95">反話</button>
+      <button onclick="setSample('12345')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors border border-slate-700/60 active:scale-95">12345</button>
+      <button onclick="setSample('Hello World!')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors border border-slate-700/60 active:scale-95">Hello World!</button>
+      <button onclick="setSample('你好世界 😃')" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors border border-slate-700/60 active:scale-95">你好世界 😃</button>
     </div>
 
-    <!-- 文字輸入區 -->
+    <!-- Input Text Area -->
     <div class="space-y-2">
+      <div class="flex justify-between items-center text-xs text-slate-400">
+        <label for="inputText" class="font-medium">輸入內容</label>
+        <span id="charCounter" class="font-mono">0 字</span>
+      </div>
       <div class="relative">
         <textarea id="inputText" rows="4" placeholder="在此輸入文字..." 
           class="w-full bg-slate-950 text-slate-100 placeholder-slate-500 rounded-xl p-4 text-base sm:text-lg border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-all resize-none"></textarea>
@@ -68,18 +61,18 @@
       </div>
     </div>
 
-    <!-- 即時反轉結果區 -->
+    <!-- Reversed Output Display -->
     <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 space-y-2">
       <div class="flex justify-between items-center text-xs font-semibold text-slate-400">
         <span><i class="fa-solid fa-arrows-rotate text-cyan-400 mr-1"></i> 反轉結果</span>
-        <button onclick="copyToClipboard('reversedText')" class="text-slate-400 hover:text-cyan-400 transition-colors flex items-center gap-1">
+        <button onclick="copyText('reversedText')" class="text-slate-400 hover:text-cyan-400 transition-colors flex items-center gap-1">
           <i class="fa-regular fa-copy"></i> 複製
         </button>
       </div>
       <div id="reversedText" class="text-lg font-mono min-h-[1.75rem] text-slate-100 break-words select-all"></div>
     </div>
 
-    <!-- 翻譯控制按鈕 -->
+    <!-- Translation Trigger Buttons -->
     <div class="flex flex-col sm:flex-row gap-3">
       <button onclick="handleTranslate('en')" id="btnEn" class="flex-1 py-3 px-4 bg-cyan-600 hover:bg-cyan-500 text-white font-medium rounded-xl shadow-lg shadow-cyan-900/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
         <i class="fa-solid fa-language"></i> 翻譯成英文
@@ -89,7 +82,7 @@
       </button>
     </div>
 
-    <!-- 翻譯結果面板 -->
+    <!-- Translation Results Section -->
     <div id="translationContainer" class="hidden bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-4">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
         <span id="transLangBadge" class="text-xs font-semibold px-2.5 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-full">
@@ -100,20 +93,18 @@
         </button>
       </div>
 
-      <!-- 原文翻譯 -->
       <div>
         <p class="text-xs text-slate-500 mb-1">【原文翻譯】</p>
         <p id="transOrigText" class="text-slate-200 text-base font-medium break-words"></p>
       </div>
 
-      <!-- 反轉字翻譯 -->
       <div class="pt-3 border-t border-slate-900">
         <p class="text-xs text-slate-500 mb-1">【反轉字翻譯】</p>
         <p id="transRevText" class="text-cyan-300 text-base font-medium break-words"></p>
       </div>
     </div>
 
-    <!-- 提示訊息 -->
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-slate-100 px-4 py-2 rounded-xl text-sm shadow-xl flex items-center gap-2 transition-all opacity-0 pointer-events-none translate-y-2">
       <i id="toastIcon" class="fa-solid fa-circle-check text-green-400"></i>
       <span id="toastMsg">已成功複製！</span>
@@ -122,12 +113,9 @@
   </main>
 
   <script>
-    // 指定之 API Key 與 Model 端點
-    const API_KEY = "AQ.Ab8RN6LELBIgoCORNZnEz8S4J5humvZfWxxKAjw5YyvNMq4jng";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
-
     const inputText = document.getElementById('inputText');
     const reversedText = document.getElementById('reversedText');
+    const charCounter = document.getElementById('charCounter');
     const translationContainer = document.getElementById('translationContainer');
     const transLangBadge = document.getElementById('transLangBadge');
     const transOrigText = document.getElementById('transOrigText');
@@ -135,15 +123,15 @@
     const btnEn = document.getElementById('btnEn');
     const btnJa = document.getElementById('btnJa');
 
-    // Unicode / Emoji 安全文字反轉
+    // Unicode & Emoji Safe Text Reversal
     function reverseString(str) {
       return Array.from(str).reverse().join('');
     }
 
-    // 即時反轉輸入處理
     function updateReversal() {
       const text = inputText.value;
       reversedText.textContent = reverseString(text);
+      charCounter.textContent = `${text.length} 字`;
     }
 
     inputText.addEventListener('input', updateReversal);
@@ -159,31 +147,25 @@
       translationContainer.classList.add('hidden');
     }
 
-    // 本地備用翻譯庫 (離線/API失敗自動防護機制)
-    function getFallbackTranslation(text, targetLang) {
-      const isEn = targetLang === 'en';
-      const map = {
-        '反話': { en: 'Irony / Reverse speech', ja: '皮肉 / 反對の言葉' },
-        '話反': { en: 'Irony / Reverse speech', ja: '皮肉 / 反對の言葉' },
-        '12345': { en: '12345', ja: '12345' },
-        '54321': { en: '54321', ja: '54321' },
-        'Hello World!': { en: 'Hello World!', ja: 'ハロー・ワールド！' },
-        '!dlroW olleH': { en: 'Hello World! (Reversed)', ja: 'ハロー・ワールド！（逆順）' }
-      };
+    // Free Client-Side Translation API Call (MyMemory REST API)
+    async function translateTextOnline(text, targetLang) {
+      if (!text.trim()) return '';
+      
+      const pair = targetLang === 'en' ? 'zh-TW|en' : 'zh-TW|ja';
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`;
 
-      if (map[text]) {
-        return map[text][targetLang];
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.responseData && data.responseData.translatedText) {
+          return data.responseData.translatedText;
+        }
+      } catch (e) {
+        console.warn('API Fetch failed, using raw string:', e);
       }
-
-      // 一般通用備用邏輯
-      if (isEn) {
-        return `[Trans] ${text}`;
-      } else {
-        return `[翻訳] ${text}`;
-      }
+      return text;
     }
 
-    // 呼叫 AI 翻譯與 Fallback 機制
     async function handleTranslate(targetLang) {
       const original = inputText.value.trim();
       const reversed = reverseString(original);
@@ -194,63 +176,34 @@
       }
 
       const isEn = targetLang === 'en';
-      const langName = isEn ? 'English' : 'Japanese';
-
-      // 載入中 UI
       btnEn.disabled = true;
       btnJa.disabled = true;
       const activeBtn = isEn ? btnEn : btnJa;
       const originalBtnHTML = activeBtn.innerHTML;
       activeBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> 翻譯中...`;
 
-      const promptText = `Translate these two Chinese texts into ${langName}. Return ONLY a JSON object format: {"original": "translation1", "reversed": "translation2"}. Text 1: "${original}", Text 2: "${reversed}"`;
-
-      let origResult = '';
-      let revResult = '';
-
       try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: promptText }] }]
-          })
-        });
+        // Parallel translation requests for original and reversed text
+        const [origTrans, revTrans] = await Promise.all([
+          translateTextOnline(original, targetLang),
+          translateTextOnline(reversed, targetLang)
+        ]);
 
-        if (!response.ok) {
-          throw new Error(`API Error ${response.status}`);
-        }
-
-        const data = await response.json();
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        
-        const cleanJsonStr = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(cleanJsonStr);
-
-        origResult = parsed.original || getFallbackTranslation(original, targetLang);
-        revResult = parsed.reversed || getFallbackTranslation(reversed, targetLang);
-
-      } catch (err) {
-        // Fetch 失敗或 Key 無效時觸發離線 Fallback 模式，確保 UI 穩定不報錯
-        console.warn('Gemini API 連線失敗，切換至本機模式:', err.message);
-        origResult = getFallbackTranslation(original, targetLang);
-        revResult = getFallbackTranslation(reversed, targetLang);
-      } finally {
-        // 渲染結果
         transLangBadge.textContent = isEn ? '英文翻譯 (English)' : '日文翻譯 (日本語)';
-        transOrigText.textContent = origResult;
-        transRevText.textContent = revResult;
+        transOrigText.textContent = origTrans || original;
+        transRevText.textContent = revTrans || reversed;
         translationContainer.classList.remove('hidden');
 
-        // 恢復按鈕狀態
+      } catch (err) {
+        showToast('翻譯時發生錯誤', false);
+      } finally {
         btnEn.disabled = false;
         btnJa.disabled = false;
         activeBtn.innerHTML = originalBtnHTML;
       }
     }
 
-    // 複製功能
-    function copyToClipboard(elementId) {
+    function copyText(elementId) {
       const el = document.getElementById(elementId);
       const text = el.innerText || el.textContent;
 
@@ -299,7 +252,6 @@
       }
     }
 
-    // 提示 Toast
     let toastTimeout;
     function showToast(message, isSuccess = true) {
       const toast = document.getElementById('toast');
